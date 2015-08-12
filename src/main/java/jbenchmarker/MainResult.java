@@ -3,12 +3,16 @@ package jbenchmarker;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 import crdt.CRDT;
 import crdt.Factory;
+import crdt.PreconditionException;
 import crdt.simulator.CausalSimulator;
+import crdt.simulator.IncorrectTraceException;
 import crdt.simulator.Trace;
 import crdt.simulator.random.RandomTrace;
 import crdt.simulator.random.StandardSeqOpProfile;
@@ -109,28 +113,79 @@ public class MainResult {
 		 */
 		
 		ArrayList<String> factories = new ArrayList<String>();		
-		//factories.add("jbenchmarker.factories.LogootFactory");
+		factories.add("jbenchmarker.factories.LogootFactory");
 		factories.add("jbenchmarker.factories.LogootSplitAVLFactory");
-		//factories.add("jbenchmarker.factories.RGAFactory");
-		//factories.add("jbenchmarker.factories.RGAFFactory");
-		//factories.add("jbenchmarker.factories.RGATreeListFactory");
-		//factories.add("jbenchmarker.factories.RgaSFactory");
+		factories.add("jbenchmarker.factories.RGAFactory");
+		factories.add("jbenchmarker.factories.RGAFFactory");
+		factories.add("jbenchmarker.factories.RGATreeListFactory");
+		factories.add("jbenchmarker.factories.RgaSFactory");
 		factories.add("jbenchmarker.factories.RgaTreeSplitBalancedFactory");
-		//factories.add("jbenchmarker.factories.TreedocFactory");
-		//factories.add("jbenchmarker.factories.RgaTreeSplitFactory");
-		//factories.add("jbenchmarker.factories.WootFactories$WootHFactory");
+		factories.add("jbenchmarker.factories.TreedocFactory");
+		factories.add("jbenchmarker.factories.RgaTreeSplitFactory");
+		factories.add("jbenchmarker.factories.WootFactories$WootHFactory");
 		
+		/*
+		 * run the simulation here
+		 */
+		double [] l_perIns = {0.1, 0.5, 0.7, 0.8, 0.9, 1.0};
+		double [] l_perBlock = {0.1, 0.5, 0.7, 0.8, 0.9, 1.0};
+		int[] l_avgBlockSize = {1,5,10,20,100,1000};
+		double [] l_probability = {0.1, 0.2, 0.3, 0.5, 0.7, 0.9, 1.0};
+		long[] l_delay = {0,5,10,30,60};
+		int[] l_replicas = {10,50,100,200,1000};
 		
+		//int name_count = 1;
+		
+		for (double perIns1 : l_perIns) {
+			for (double perBlock1 : l_perBlock) {
+				for (int avgBlockSize1: l_avgBlockSize) {
+					for (double probability1 : l_probability) {
+						for (long delay1 : l_delay) {
+							for (int replicas1 : l_replicas) {
+								System.out.println("----");
+								System.out.println("Running with: " );
+								System.out.println("perIns = " + perIns1);
+								System.out.println("perBlock = " + perBlock1);
+								System.out.println("avgBlockSize = " + avgBlockSize1);
+								System.out.println("probability = " + probability1);
+								System.out.println("delay = " + delay1);
+								System.out.println("replicas = " + replicas1);
+								String traceName1 = "Test_" + new SimpleDateFormat("yyMMdd_HHmm").format(Calendar.getInstance().getTime());;
+								//name_count++;
+								simulate (traceName1, nbExec, nbTraceExec, duration, perIns1, perBlock1, avgBlockSize1, 
+										sdvBlockSize, probability1, delay1,
+										sdv, replicas1, comment, args, factories);
+								System.out.println("***");
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-		
-		
+	public static void writeTofile(String file, String s) throws IOException {
+		FileWriter local = new FileWriter(file + ".csv", true);
+
+		local.write(s);
+
+		if (local != null) {
+			local.close();
+		}
+	}
+	
+	public static void simulate (String traceName, int nbExec, int nbTraceExec,long duration, double perIns, double perBlock, 
+			int avgBlockSize, double sdvBlockSize, double probability,
+			long delay, double sdv, int replicas, String comment,
+			String[] args, ArrayList<String> factories) throws Exception {
 		/* 
 		 * write result for all trace executions 
 		 */
 		
 		for (int k=0; k<nbTraceExec; k++){
+			//String timeStamp = new SimpleDateFormat("yyMMdd_HHmm").format(Calendar.getInstance().getTime());
 			String repPath = System.getProperty("user.dir")+ File.separator+"ResultTest" + File.separator;
-			String repPath1 = repPath+traceName+File.separator+traceName+"-"+k+File.separator;				
+			String repPath1 = repPath+traceName+File.separator+traceName+"-"+k+File.separator;	
 			args[2]=repPath1+traceName+"-"+k;
 			if(!new File(repPath1).exists())
 			{
@@ -262,27 +317,4 @@ public class MainResult {
 		}
 		scanner.close();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-	public static void writeTofile(String file, String s) throws IOException {
-		FileWriter local = new FileWriter(file + ".csv", true);
-
-		local.write(s);
-
-		if (local != null) {
-			local.close();
-		}
-	}
-
 }

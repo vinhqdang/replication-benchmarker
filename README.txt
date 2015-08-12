@@ -2,7 +2,7 @@ Replication Benchmarker
 =======
 
 https://github.com/score-team/replication-benchmarker/
-Copyright (C) 2012 Université de Lorraine / LORIA / Inria / SCORE Team
+Copyright (C) 2015 Université de Lorraine / LORIA / Inria / COAST Team
 
 ReplicationBenchmarker is a performance evaluation framework for replication mechanisms
 used in collaborative applications.
@@ -28,3 +28,9 @@ To use git extraction you a need a CouchDB instance accessible.
 * You get the result with Simulator methods :
 - details : getMemUsed(), replicaGenerationTimes(), getRemoteTimes()
 - sum and average : getSumXXX getAvgXXX
+
+======
+
+Update on 12/Aug/2015
+
+Now you can run with MainResult class. It will get the parameters and iterate through different parameters to generate multiple result test.

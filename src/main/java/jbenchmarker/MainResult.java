@@ -156,6 +156,7 @@ public class MainResult {
 										sdvBlockSize, probability1, delay1,
 										sdv, replicas1, comment, args, factories);
 								System.out.println("***");
+								System.gc();
 							}
 						}
 					}

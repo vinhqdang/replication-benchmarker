@@ -157,6 +157,7 @@ public class MainResult {
 										sdv, replicas1, comment, args, factories);
 								System.out.println("***");
 								System.gc();
+								Thread.sleep(60000);
 							}
 						}
 					}
